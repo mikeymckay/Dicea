@@ -27,6 +27,11 @@ $(document).ready(function() {
     });
     return equals(JSON.stringify(googleSpreadsheet), JSON.stringify(result));
   });
+  test("Load test data and parse", function() {
+    return jQuery.getJSON("testCallbackData.json", function(data) {
+      return GoogleSpreadsheet.callback(data);
+    });
+  });
   return test("Load and parse", function() {
     var googleSpreadsheet;
     googleSpreadsheet = new GoogleSpreadsheet();

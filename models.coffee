@@ -44,6 +44,8 @@ GoogleSpreadsheet.find = (params) ->
           return GoogleSpreadsheet.bless(itemObject)
 
 GoogleSpreadsheet.callback = (data) ->
+  console.log "YOYO"
+  console.log(JSON.stringify(data))
   # I create a hybrid indexed array with a hash/dictionary whacked on the end - maybe a bad idea!
   result = []
   for row in data.feed.entry

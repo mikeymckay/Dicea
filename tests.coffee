@@ -22,6 +22,10 @@ $(document).ready ->
     result = GoogleSpreadsheet.find({url:url})
     equals(JSON.stringify(googleSpreadsheet),JSON.stringify(result))
 
+  test "Load test data and parse", ->
+    jQuery.getJSON "testCallbackData.json", (data) ->
+      GoogleSpreadsheet.callback(data)
+
   test "Load and parse", ->
     googleSpreadsheet = new GoogleSpreadsheet()
     googleSpreadsheet.url(url)

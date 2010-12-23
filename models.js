@@ -67,6 +67,8 @@ GoogleSpreadsheet.find = function(params) {
 };
 GoogleSpreadsheet.callback = function(data) {
   var cell, jsonUrl, result, row, rowData, target, _i, _j, _len, _len2, _ref, _ref2;
+  console.log("YOYO");
+  console.log(JSON.stringify(data));
   result = [];
   _ref = data.feed.entry;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
