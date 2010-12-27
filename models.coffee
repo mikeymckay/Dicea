@@ -12,7 +12,6 @@ class GoogleUrl
 
 class GoogleSpreadsheet
   load: ->
-    console.log "yo"
     url = @jsonUrl + "&callback=GoogleSpreadsheet.callback"
     $('body').append("<script src='" +url+ "'/>")
 
@@ -24,7 +23,6 @@ class GoogleSpreadsheet
     @url = googleUrl.url
     @key = googleUrl.key
     @jsonUrl = "http://spreadsheets.google.com/feeds/list/" + @key + "/od6/public/basic?alt=json-in-script"
-    @data = null
 
   save: ->
     localStorage["GoogleSpreadsheet."+@type] = JSON.stringify(this)
@@ -32,7 +30,7 @@ class GoogleSpreadsheet
 GoogleSpreadsheet.bless = (object) ->
   result = new GoogleSpreadsheet()
   for key,value of object
-    result['key']=value
+    result[key]=value
   result
 
 GoogleSpreadsheet.find = (params) ->
@@ -44,9 +42,6 @@ GoogleSpreadsheet.find = (params) ->
           return GoogleSpreadsheet.bless(itemObject)
 
 GoogleSpreadsheet.callback = (data) ->
-  console.log "YOYO"
-  console.log(JSON.stringify(data))
-  # I create a hybrid indexed array with a hash/dictionary whacked on the end - maybe a bad idea!
   result = []
   for row in data.feed.entry
     rowData = {}
@@ -57,6 +52,11 @@ GoogleSpreadsheet.callback = (data) ->
   jsonUrl = new GoogleSpreadsheet(data.feed.id.$t).jsonUrl
   target = GoogleSpreadsheet.find({jsonUrl:jsonUrl})
   target.data = result
-  console.log("callback:")
-  console.log JSON.stringify(target)
   target.save()
+  result
+
+class Checklist
+  googleSpreadsheet: (googleSpreadsheet) ->
+  toTable: ->
+  reload: ->
+  submit: ->

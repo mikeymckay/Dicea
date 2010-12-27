@@ -1,4 +1,4 @@
-var GoogleSpreadsheet, GoogleUrl;
+var Checklist, GoogleSpreadsheet, GoogleUrl;
 GoogleUrl = function() {
   function GoogleUrl(sourceIdentifier) {
     this.sourceIdentifier = sourceIdentifier;
@@ -20,7 +20,6 @@ GoogleSpreadsheet = function() {
   function GoogleSpreadsheet() {}
   GoogleSpreadsheet.prototype.load = function() {
     var url;
-    console.log("yo");
     url = this.jsonUrl + "&callback=GoogleSpreadsheet.callback";
     return $('body').append("<script src='" + url + "'/>");
   };
@@ -33,8 +32,7 @@ GoogleSpreadsheet = function() {
     }
     this.url = googleUrl.url;
     this.key = googleUrl.key;
-    this.jsonUrl = "http://spreadsheets.google.com/feeds/list/" + this.key + "/od6/public/basic?alt=json-in-script";
-    return this.data = null;
+    return this.jsonUrl = "http://spreadsheets.google.com/feeds/list/" + this.key + "/od6/public/basic?alt=json-in-script";
   };
   GoogleSpreadsheet.prototype.save = function() {
     return localStorage["GoogleSpreadsheet." + this.type] = JSON.stringify(this);
@@ -46,7 +44,7 @@ GoogleSpreadsheet.bless = function(object) {
   result = new GoogleSpreadsheet();
   for (key in object) {
     value = object[key];
-    result['key'] = value;
+    result[key] = value;
   }
   return result;
 };
@@ -67,8 +65,6 @@ GoogleSpreadsheet.find = function(params) {
 };
 GoogleSpreadsheet.callback = function(data) {
   var cell, jsonUrl, result, row, rowData, target, _i, _j, _len, _len2, _ref, _ref2;
-  console.log("YOYO");
-  console.log(JSON.stringify(data));
   result = [];
   _ref = data.feed.entry;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -87,7 +83,14 @@ GoogleSpreadsheet.callback = function(data) {
     jsonUrl: jsonUrl
   });
   target.data = result;
-  console.log("callback:");
-  console.log(JSON.stringify(target));
-  return target.save();
+  target.save();
+  return result;
 };
+Checklist = function() {
+  function Checklist() {}
+  Checklist.prototype.googleSpreadsheet = function(googleSpreadsheet) {};
+  Checklist.prototype.toTable = function() {};
+  Checklist.prototype.reload = function() {};
+  Checklist.prototype.submit = function() {};
+  return Checklist;
+}();

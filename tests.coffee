@@ -20,11 +20,14 @@ $(document).ready ->
     googleSpreadsheet.type = "test"
     googleSpreadsheet.save()
     result = GoogleSpreadsheet.find({url:url})
-    equals(JSON.stringify(googleSpreadsheet),JSON.stringify(result))
+    equals(JSON.stringify(result),JSON.stringify(googleSpreadsheet))
 
-  test "Load test data and parse", ->
+  test "Parsing", ->
     jQuery.getJSON "testCallbackData.json", (data) ->
-      GoogleSpreadsheet.callback(data)
+      result = GoogleSpreadsheet.callback(data)
+      console.log result
+      # I don't think this equals works
+      equals(result.length,10)
 
   test "Load and parse", ->
     googleSpreadsheet = new GoogleSpreadsheet()

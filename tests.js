@@ -25,11 +25,14 @@ $(document).ready(function() {
     result = GoogleSpreadsheet.find({
       url: url
     });
-    return equals(JSON.stringify(googleSpreadsheet), JSON.stringify(result));
+    return equals(JSON.stringify(result), JSON.stringify(googleSpreadsheet));
   });
-  test("Load test data and parse", function() {
+  test("Parsing", function() {
     return jQuery.getJSON("testCallbackData.json", function(data) {
-      return GoogleSpreadsheet.callback(data);
+      var result;
+      result = GoogleSpreadsheet.callback(data);
+      console.log(result);
+      return equals(result.length, 10);
     });
   });
   return test("Load and parse", function() {
