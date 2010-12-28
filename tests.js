@@ -28,12 +28,13 @@ $(document).ready(function() {
     return equals(JSON.stringify(result), JSON.stringify(googleSpreadsheet));
   });
   test("Parsing", function() {
-    return jQuery.getJSON("testCallbackData.json", function(data) {
+    result = null;    jQuery.getJSON("testCallbackData.json", function(data) {
       var result;
+      console.log("Callbback!");
       result = GoogleSpreadsheet.callback(data);
-      console.log(result);
-      return equals(result.length, 10);
+      return console.log(result);
     });
+    return equals(result.length, 10);
   });
   return test("Load and parse", function() {
     var googleSpreadsheet;

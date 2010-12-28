@@ -23,11 +23,15 @@ $(document).ready ->
     equals(JSON.stringify(result),JSON.stringify(googleSpreadsheet))
 
   test "Parsing", ->
+    `result = null`
     jQuery.getJSON "testCallbackData.json", (data) ->
+      console.log "Callbback!"
       result = GoogleSpreadsheet.callback(data)
       console.log result
       # I don't think this equals works
-      equals(result.length,10)
+    #"foo" while result == null
+    equals(result.length,10)
+
 
   test "Load and parse", ->
     googleSpreadsheet = new GoogleSpreadsheet()
