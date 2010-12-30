@@ -6,6 +6,9 @@ $(document).ready ->
   module "Google Spreadsheet"
   url = "https://spreadsheets.google.com/pub?key=0Ago31JQPZxZrdHF2bWNjcTJFLXJ6UUM5SldEakdEaXc&hl=en&output=html"
 
+  QUnit.testStart = (name) ->
+    console.log name
+
   test "Load from URL", ->
     expect(2)
     expectedKey = "0Ago31JQPZxZrdHF2bWNjcTJFLXJ6UUM5SldEakdEaXc"
@@ -23,17 +26,24 @@ $(document).ready ->
     equals(JSON.stringify(result),JSON.stringify(googleSpreadsheet))
 
   test "Parsing", ->
-    `result = null`
-    jQuery.getJSON "testCallbackData.json", (data) ->
-      console.log "Callbback!"
+    # This is how to test callback functions - use stop() and start()
+    stop()
+    jQuery.getJSON "testsCallbackData.json", (data) ->
       result = GoogleSpreadsheet.callback(data)
-      console.log result
-      # I don't think this equals works
-    #"foo" while result == null
-    equals(result.length,10)
-
+      equals(result.data.length,10)
+      start()
 
   test "Load and parse", ->
+    localStorage.clear()
     googleSpreadsheet = new GoogleSpreadsheet()
     googleSpreadsheet.url(url)
+    googleSpreadsheet.type = "test"
+    googleSpreadsheet.save()
     googleSpreadsheet.load()
+    stop()
+    hasBeenLoaded = ->
+      result = GoogleSpreadsheet.find({url:url})
+      equals(result.data.length,10)
+      start()
+    setTimeout(hasBeenLoaded,1000)
+

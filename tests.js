@@ -7,6 +7,9 @@ $(document).ready(function() {
   });
   module("Google Spreadsheet");
   url = "https://spreadsheets.google.com/pub?key=0Ago31JQPZxZrdHF2bWNjcTJFLXJ6UUM5SldEakdEaXc&hl=en&output=html";
+  QUnit.testStart = function(name) {
+    return console.log(name);
+  };
   test("Load from URL", function() {
     var expectedJsonUrl, expectedKey, googleUrl;
     expect(2);
@@ -28,18 +31,31 @@ $(document).ready(function() {
     return equals(JSON.stringify(result), JSON.stringify(googleSpreadsheet));
   });
   test("Parsing", function() {
-    result = null;    jQuery.getJSON("testCallbackData.json", function(data) {
+    stop();
+    return jQuery.getJSON("testsCallbackData.json", function(data) {
       var result;
-      console.log("Callbback!");
       result = GoogleSpreadsheet.callback(data);
-      return console.log(result);
+      equals(result.data.length, 10);
+      return start();
     });
-    return equals(result.length, 10);
   });
   return test("Load and parse", function() {
-    var googleSpreadsheet;
+    var googleSpreadsheet, hasBeenLoaded;
+    localStorage.clear();
     googleSpreadsheet = new GoogleSpreadsheet();
     googleSpreadsheet.url(url);
-    return googleSpreadsheet.load();
+    googleSpreadsheet.type = "test";
+    googleSpreadsheet.save();
+    googleSpreadsheet.load();
+    stop();
+    hasBeenLoaded = function() {
+      var result;
+      result = GoogleSpreadsheet.find({
+        url: url
+      });
+      equals(result.data.length, 10);
+      return start();
+    };
+    return setTimeout(hasBeenLoaded, 1000);
   });
 });

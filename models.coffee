@@ -40,6 +40,7 @@ GoogleSpreadsheet.find = (params) ->
       for key,value of params
         if itemObject[key] == value
           return GoogleSpreadsheet.bless(itemObject)
+  return null
 
 GoogleSpreadsheet.callback = (data) ->
   result = []
@@ -49,11 +50,14 @@ GoogleSpreadsheet.callback = (data) ->
       cell = cell.split(": ")
       rowData[cell[0]]=cell[1]
     result.push(rowData)
-  jsonUrl = new GoogleSpreadsheet(data.feed.id.$t).jsonUrl
-  target = GoogleSpreadsheet.find({jsonUrl:jsonUrl})
-  target.data = result
-  target.save()
-  result
+  googleUrl = new GoogleUrl(data.feed.id.$t)
+  googleSpreadsheet = GoogleSpreadsheet.find({jsonUrl:googleUrl.jsonUrl})
+  if googleSpreadsheet == null
+    googleSpreadsheet = new GoogleSpreadsheet()
+    googleSpreadsheet.googleUrl(googleUrl)
+  googleSpreadsheet.data = result
+  googleSpreadsheet.save()
+  googleSpreadsheet
 
 class Checklist
   googleSpreadsheet: (googleSpreadsheet) ->

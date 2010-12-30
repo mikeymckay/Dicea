@@ -62,9 +62,10 @@ GoogleSpreadsheet.find = function(params) {
       }
     }
   }
+  return null;
 };
 GoogleSpreadsheet.callback = function(data) {
-  var cell, jsonUrl, result, row, rowData, target, _i, _j, _len, _len2, _ref, _ref2;
+  var cell, googleSpreadsheet, googleUrl, result, row, rowData, _i, _j, _len, _len2, _ref, _ref2;
   result = [];
   _ref = data.feed.entry;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -78,13 +79,17 @@ GoogleSpreadsheet.callback = function(data) {
     }
     result.push(rowData);
   }
-  jsonUrl = new GoogleSpreadsheet(data.feed.id.$t).jsonUrl;
-  target = GoogleSpreadsheet.find({
-    jsonUrl: jsonUrl
+  googleUrl = new GoogleUrl(data.feed.id.$t);
+  googleSpreadsheet = GoogleSpreadsheet.find({
+    jsonUrl: googleUrl.jsonUrl
   });
-  target.data = result;
-  target.save();
-  return result;
+  if (googleSpreadsheet === null) {
+    googleSpreadsheet = new GoogleSpreadsheet();
+    googleSpreadsheet.googleUrl(googleUrl);
+  }
+  googleSpreadsheet.data = result;
+  googleSpreadsheet.save();
+  return googleSpreadsheet;
 };
 Checklist = function() {
   function Checklist() {}
