@@ -11,9 +11,18 @@ class GoogleUrl
     @jsonUrl = "http://spreadsheets.google.com/feeds/list/" + @key + "/od6/public/basic?alt=json-in-script"
 
 class GoogleSpreadsheet
-  load: ->
+  load: (callback) ->
     url = @jsonUrl + "&callback=GoogleSpreadsheet.callback"
     $('body').append("<script src='" +url+ "'/>")
+    jsonUrl = @jsonUrl
+    safetyCounter = 0
+    waitUntilLoaded = ->
+      result = GoogleSpreadsheet.find({jsonUrl:jsonUrl})
+      if safetyCounter++ > 20 or (result? and result.data?)
+        clearInterval(intervalId)
+        callback()
+    intervalId = setInterval( waitUntilLoaded, 200)
+    result if result?
 
   url: (url) ->
     this.googleUrl(new GoogleUrl(url))

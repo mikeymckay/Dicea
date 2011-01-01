@@ -31,6 +31,7 @@ $(document).ready(function() {
     return equals(JSON.stringify(result), JSON.stringify(googleSpreadsheet));
   });
   test("Parsing", function() {
+    expect(1);
     stop();
     return jQuery.getJSON("testsCallbackData.json", function(data) {
       var result;
@@ -40,22 +41,21 @@ $(document).ready(function() {
     });
   });
   return test("Load and parse", function() {
-    var googleSpreadsheet, hasBeenLoaded;
+    var googleSpreadsheet;
+    expect(1);
     localStorage.clear();
     googleSpreadsheet = new GoogleSpreadsheet();
     googleSpreadsheet.url(url);
     googleSpreadsheet.type = "test";
     googleSpreadsheet.save();
-    googleSpreadsheet.load();
     stop();
-    hasBeenLoaded = function() {
+    return googleSpreadsheet.load(function() {
       var result;
       result = GoogleSpreadsheet.find({
         url: url
       });
       equals(result.data.length, 10);
       return start();
-    };
-    return setTimeout(hasBeenLoaded, 1000);
+    });
   });
 });

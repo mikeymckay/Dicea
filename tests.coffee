@@ -26,6 +26,7 @@ $(document).ready ->
     equals(JSON.stringify(result),JSON.stringify(googleSpreadsheet))
 
   test "Parsing", ->
+    expect(1)
     # This is how to test callback functions - use stop() and start()
     stop()
     jQuery.getJSON "testsCallbackData.json", (data) ->
@@ -34,16 +35,14 @@ $(document).ready ->
       start()
 
   test "Load and parse", ->
+    expect(1)
     localStorage.clear()
     googleSpreadsheet = new GoogleSpreadsheet()
     googleSpreadsheet.url(url)
     googleSpreadsheet.type = "test"
     googleSpreadsheet.save()
-    googleSpreadsheet.load()
     stop()
-    hasBeenLoaded = ->
+    googleSpreadsheet.load ->
       result = GoogleSpreadsheet.find({url:url})
       equals(result.data.length,10)
       start()
-    setTimeout(hasBeenLoaded,1000)
-

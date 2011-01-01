@@ -18,10 +18,26 @@ GoogleUrl = function() {
 }();
 GoogleSpreadsheet = function() {
   function GoogleSpreadsheet() {}
-  GoogleSpreadsheet.prototype.load = function() {
-    var url;
+  GoogleSpreadsheet.prototype.load = function(callback) {
+    var intervalId, jsonUrl, safetyCounter, url, waitUntilLoaded;
     url = this.jsonUrl + "&callback=GoogleSpreadsheet.callback";
-    return $('body').append("<script src='" + url + "'/>");
+    $('body').append("<script src='" + url + "'/>");
+    jsonUrl = this.jsonUrl;
+    safetyCounter = 0;
+    waitUntilLoaded = function() {
+      var result;
+      result = GoogleSpreadsheet.find({
+        jsonUrl: jsonUrl
+      });
+      if (safetyCounter++ > 20 || ((result != null) && (result.data != null))) {
+        clearInterval(intervalId);
+        return callback();
+      }
+    };
+    intervalId = setInterval(waitUntilLoaded, 200);
+    if (typeof result != "undefined" && result !== null) {
+      return result;
+    }
   };
   GoogleSpreadsheet.prototype.url = function(url) {
     return this.googleUrl(new GoogleUrl(url));
