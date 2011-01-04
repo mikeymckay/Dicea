@@ -46,3 +46,13 @@ $(document).ready ->
       result = GoogleSpreadsheet.find({url:url})
       equals(result.data.length,10)
       start()
+
+  test "Create checklist", ->
+    expect(1)
+    stop()
+    jQuery.getJSON "testsCallbackData.json", (data) ->
+      checklist = new Checklist()
+      checklist.loadFromGoogleSpreadhseet(GoogleSpreadsheet.callback(data))
+      equal(checklist.data[0].text,"Patient has confirmed identity")
+      #TODO: equals(firstItem.type,"")
+      start()

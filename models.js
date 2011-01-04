@@ -1,4 +1,12 @@
 var Checklist, GoogleSpreadsheet, GoogleUrl;
+var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+  function ctor() { this.constructor = child; }
+  ctor.prototype = parent.prototype;
+  child.prototype = new ctor;
+  child.__super__ = parent.prototype;
+  return child;
+};
 GoogleUrl = function() {
   function GoogleUrl(sourceIdentifier) {
     this.sourceIdentifier = sourceIdentifier;
@@ -66,14 +74,28 @@ GoogleSpreadsheet.bless = function(object) {
 };
 GoogleSpreadsheet.find = function(params) {
   var item, itemObject, key, value, _i, _len;
-  for (_i = 0, _len = localStorage.length; _i < _len; _i++) {
-    item = localStorage[_i];
-    if (item.match(/^GoogleSpreadsheet\./)) {
-      itemObject = JSON.parse(localStorage[item]);
-      for (key in params) {
-        value = params[key];
-        if (itemObject[key] === value) {
-          return GoogleSpreadsheet.bless(itemObject);
+  try {
+    for (item in localStorage) {
+      if (item.match(/^GoogleSpreadsheet\./)) {
+        itemObject = JSON.parse(localStorage[item]);
+        for (key in params) {
+          value = params[key];
+          if (itemObject[key] === value) {
+            return GoogleSpreadsheet.bless(itemObject);
+          }
+        }
+      }
+    }
+  } catch (error) {
+    for (_i = 0, _len = localStorage.length; _i < _len; _i++) {
+      item = localStorage[_i];
+      if (item.match(/^GoogleSpreadsheet\./)) {
+        itemObject = JSON.parse(localStorage[item]);
+        for (key in params) {
+          value = params[key];
+          if (itemObject[key] === value) {
+            return GoogleSpreadsheet.bless(itemObject);
+          }
         }
       }
     }
@@ -108,10 +130,31 @@ GoogleSpreadsheet.callback = function(data) {
   return googleSpreadsheet;
 };
 Checklist = function() {
-  function Checklist() {}
-  Checklist.prototype.googleSpreadsheet = function(googleSpreadsheet) {};
-  Checklist.prototype.toTable = function() {};
-  Checklist.prototype.reload = function() {};
-  Checklist.prototype.submit = function() {};
+  function Checklist() {
+    Checklist.__super__.constructor.apply(this, arguments);
+  }
+  __extends(Checklist, GoogleSpreadsheet);
+  Checklist.prototype.loadFromGoogleSpreadhseet = function(googleSpreadsheet) {
+    var key, value, _results;
+    _results = [];
+    for (key in googleSpreadsheet) {
+      value = googleSpreadsheet[key];
+      _results.push(this[key] = value);
+    }
+    return _results;
+  };
+  Checklist.prototype.form = function(className) {
+    var i, item, result, _len, _ref;
+    result = "";
+    _ref = this.data;
+    for (i = 0, _len = _ref.length; i < _len; i++) {
+      item = _ref[i];
+      result += "<input type='checkbox' name='checkbox-" + i + "' id='checkbox-" + i + "' /><label for='checkbox-" + i + "'>" + item.text + "</label>";
+    }
+    return result;
+  };
+  Checklist.prototype.jqueryMobileForm = function() {
+    return "<div data-role='fieldcontain'>  <fieldset data-role='controlgroup'>    " + (this.form()) + "  </fieldset></div>";
+  };
   return Checklist;
 }();

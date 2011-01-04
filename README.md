@@ -1,1 +1,1 @@
-Connecting up offline html apps with google spreadsheets.
+This uses coffee script, google spreadsheets and JQuery Mobile to make little data collection apps.

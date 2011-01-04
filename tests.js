@@ -40,7 +40,7 @@ $(document).ready(function() {
       return start();
     });
   });
-  return test("Load and parse", function() {
+  test("Load and parse", function() {
     var googleSpreadsheet;
     expect(1);
     localStorage.clear();
@@ -55,6 +55,17 @@ $(document).ready(function() {
         url: url
       });
       equals(result.data.length, 10);
+      return start();
+    });
+  });
+  return test("Create checklist", function() {
+    expect(1);
+    stop();
+    return jQuery.getJSON("testsCallbackData.json", function(data) {
+      var checklist;
+      checklist = new Checklist();
+      checklist.loadFromGoogleSpreadhseet(GoogleSpreadsheet.callback(data));
+      equal(checklist.data[0].text, "Patient has confirmed identity");
       return start();
     });
   });

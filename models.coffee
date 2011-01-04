@@ -43,12 +43,21 @@ GoogleSpreadsheet.bless = (object) ->
   result
 
 GoogleSpreadsheet.find = (params) ->
-  for item in localStorage
-    if item.match(/^GoogleSpreadsheet\./)
-      itemObject = JSON.parse(localStorage[item])
-      for key,value of params
-        if itemObject[key] == value
-          return GoogleSpreadsheet.bless(itemObject)
+  try
+    for item of localStorage
+      if item.match(/^GoogleSpreadsheet\./)
+        itemObject = JSON.parse(localStorage[item])
+        for key,value of params
+          if itemObject[key] == value
+            return GoogleSpreadsheet.bless(itemObject)
+# Need this to handle differences in localStorage between chrome and firefox TODO make dry
+  catch error 
+    for item in localStorage
+      if item.match(/^GoogleSpreadsheet\./)
+        itemObject = JSON.parse(localStorage[item])
+        for key,value of params
+          if itemObject[key] == value
+            return GoogleSpreadsheet.bless(itemObject)
   return null
 
 GoogleSpreadsheet.callback = (data) ->
@@ -68,8 +77,24 @@ GoogleSpreadsheet.callback = (data) ->
   googleSpreadsheet.save()
   googleSpreadsheet
 
-class Checklist
-  googleSpreadsheet: (googleSpreadsheet) ->
-  toTable: ->
-  reload: ->
-  submit: ->
+class Checklist extends GoogleSpreadsheet
+  # TODO there must be a better way 
+  loadFromGoogleSpreadhseet: (googleSpreadsheet) ->
+    for key,value of googleSpreadsheet
+      this[key]=value
+  form: (className) ->
+    result = ""
+    for item, i in @data
+      result += "
+<input type='checkbox' name='checkbox-#{i}' id='checkbox-#{i}' />
+<label for='checkbox-#{i}'>#{item.text}</label>
+"
+    result
+
+  jqueryMobileForm: -> "
+<div data-role='fieldcontain'>
+  <fieldset data-role='controlgroup'>
+    #{this.form()}
+  </fieldset>
+</div>
+"
